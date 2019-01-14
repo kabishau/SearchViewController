@@ -21,6 +21,9 @@ class MainViewController: UIViewController {
         Restaurant(name: "Blue Eye Hookah Bar", type: .bar),
         Restaurant(name: "Tako Bell", type: .fastfood)
     ]
+    
+    // the results will be displayed in main vc, additional vc is not required
+    let searchController = UISearchController(searchResultsController: nil)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,6 +31,12 @@ class MainViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         
+        // setup the Search Controller
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false // allows to interract with the search results
+        searchController.searchBar.placeholder = "Search here..."
+        navigationItem.searchController = searchController // creates search bar in navigation bar
+        definesPresentationContext = true // ? let vc go in case of transition to another vc
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -41,6 +50,13 @@ class MainViewController: UIViewController {
     }
     
     
+}
+
+extension MainViewController: UISearchResultsUpdating {
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        
+    }
 }
 
 extension MainViewController: UITableViewDelegate, UITableViewDataSource {
@@ -61,4 +77,6 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     
     
 }
+
+
 
