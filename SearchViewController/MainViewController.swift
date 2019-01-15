@@ -4,7 +4,9 @@ class MainViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
-    let restaurants = [
+    private var filteredRestaurants = [Restaurant]()
+    
+    private let restaurants = [
         Restaurant(name: "Red Stallion", type: .restaurant),
         Restaurant(name: "Karp's Davisville Pub", type: .bar),
         Restaurant(name: "Oven Brothers", type: .restaurant),
@@ -23,7 +25,16 @@ class MainViewController: UIViewController {
     ]
     
     // the results will be displayed in main vc, additional vc is not required
-    let searchController = UISearchController(searchResultsController: nil)
+    private let searchController = UISearchController(searchResultsController: nil)
+    
+    private var searchBarIsEmpty: Bool {
+        guard let text = searchController.searchBar.text else { return false}
+        return text.isEmpty
+    }
+    
+    private var isFiltering: Bool {
+        return searchController.isActive && !searchBarIsEmpty
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,7 +54,11 @@ class MainViewController: UIViewController {
         if segue.identifier == "DetailSegue" {
             if let destination = segue.destination as? DetailViewController {
                 if let index = sender as? IndexPath {
-                    destination.restaurant = restaurants[index.row]
+                    if isFiltering {
+                        destination.restaurant = filteredRestaurants[index.row]
+                    } else {
+                        destination.restaurant = restaurants[index.row]
+                    }
                 }
             }
         }
@@ -55,19 +70,38 @@ class MainViewController: UIViewController {
 extension MainViewController: UISearchResultsUpdating {
     
     func updateSearchResults(for searchController: UISearchController) {
-        
+        filterContentForSearchText(searchController.searchBar.text!)
+    }
+    
+    private func filterContentForSearchText(_ searchText: String) {
+        filteredRestaurants = restaurants.filter({ (restaurant: Restaurant) -> Bool in
+            return restaurant.name.lowercased().contains(searchText.lowercased())
+        })
+        tableView.reloadData()
     }
 }
 
 extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return restaurants.count
+        if isFiltering {
+            return filteredRestaurants.count
+        } else {
+            return restaurants.count
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-        cell.textLabel?.text = restaurants[indexPath.row].name
-        cell.detailTextLabel?.text = restaurants[indexPath.row].type.rawValue
+        
+        var restaurant: Restaurant
+        if isFiltering {
+            restaurant = filteredRestaurants[indexPath.row]
+        } else {
+            restaurant = restaurants[indexPath.row]
+        }
+        cell.textLabel?.text = restaurant.name
+        cell.detailTextLabel?.text = restaurant.type.rawValue
+        
         return cell
     }
     
