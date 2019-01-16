@@ -48,18 +48,32 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IuL-rE-ntN" customClass="SearchFooter" customModule="SearchViewController" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="U1J-pj-j3f"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="9Pz-88-CTs" secondAttribute="bottom" id="61d-so-F50"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="9Pz-88-CTs" secondAttribute="trailing" id="Fp3-lI-q1G"/>
+                            <constraint firstItem="IuL-rE-ntN" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="HCq-M7-NRM"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="IuL-rE-ntN" secondAttribute="bottom" id="KQF-qw-hJ9"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="IuL-rE-ntN" secondAttribute="bottom" id="LML-ab-NPr"/>
                             <constraint firstItem="9Pz-88-CTs" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="YKj-sE-kkm"/>
+                            <constraint firstItem="IuL-rE-ntN" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="mXz-fx-uEc"/>
                             <constraint firstItem="9Pz-88-CTs" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="mow-7R-qSL"/>
+                            <constraint firstItem="IuL-rE-ntN" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="ofm-2Y-uqy"/>
+                            <constraint firstItem="IuL-rE-ntN" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="zSN-1P-gpO"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" id="8eL-Oa-2Dz"/>
                     <connections>
+                        <outlet property="searchFooter" destination="IuL-rE-ntN" id="0q9-GH-ckE"/>
                         <outlet property="tableView" destination="9Pz-88-CTs" id="Ody-S8-aLB"/>
                         <segue destination="akN-sf-RN0" kind="show" identifier="DetailSegue" id="jaC-eR-gQu"/>
                     </connections>

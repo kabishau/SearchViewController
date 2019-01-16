@@ -3,6 +3,7 @@ import UIKit
 class MainViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var searchFooter: SearchFooter!
     
     private var filteredRestaurants = [Restaurant]()
     
@@ -107,8 +108,10 @@ extension MainViewController: UISearchResultsUpdating {
 extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if isFiltering {
+            searchFooter.setIsFilteringToShow(filteredItemCount: filteredRestaurants.count, of: restaurants.count)
             return filteredRestaurants.count
         } else {
+            searchFooter.setNotFiltering()
             return restaurants.count
         }
     }
