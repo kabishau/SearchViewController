@@ -33,7 +33,10 @@ class MainViewController: UIViewController {
     }
     
     private var isFiltering: Bool {
-        return searchController.isActive && !searchBarIsEmpty
+        
+        let searchBarScopeIsFiltering = searchController.searchBar.selectedScopeButtonIndex != 0
+        
+        return searchController.isActive && (!searchBarIsEmpty || searchBarScopeIsFiltering)
     }
 
     override func viewDidLoad() {
@@ -48,6 +51,10 @@ class MainViewController: UIViewController {
         searchController.searchBar.placeholder = "Search here..."
         navigationItem.searchController = searchController // creates search bar in navigation bar
         definesPresentationContext = true // ? let vc go in case of transition to another vc
+        
+        // setup the Scope Bar
+        searchController.searchBar.scopeButtonTitles = ["All", "Restaurant", "Fast Food", "Bar"]
+        searchController.searchBar.delegate = self
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -63,19 +70,35 @@ class MainViewController: UIViewController {
             }
         }
     }
-    
-    
+}
+
+extension MainViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
+        filterContentForSearchText(searchBar.text!, scope: searchBar.scopeButtonTitles![selectedScope])
+    }
 }
 
 extension MainViewController: UISearchResultsUpdating {
     
     func updateSearchResults(for searchController: UISearchController) {
-        filterContentForSearchText(searchController.searchBar.text!)
+        
+        let searchBar = searchController.searchBar
+        let scope = searchBar.scopeButtonTitles![searchBar.selectedScopeButtonIndex]
+        
+        filterContentForSearchText(searchController.searchBar.text!, scope: scope)
     }
     
-    private func filterContentForSearchText(_ searchText: String) {
+    private func filterContentForSearchText(_ searchText: String, scope: String = "All") {
         filteredRestaurants = restaurants.filter({ (restaurant: Restaurant) -> Bool in
-            return restaurant.name.lowercased().contains(searchText.lowercased())
+            
+             // answering - do we have scope defined?
+            let doesTypeMatch = (scope == "All") || (restaurant.type.rawValue == scope)
+            
+            if searchBarIsEmpty {
+                return doesTypeMatch // ?? what does this do?
+            }
+    
+            return doesTypeMatch && restaurant.name.lowercased().contains(searchText.lowercased())
         })
         tableView.reloadData()
     }
@@ -108,8 +131,6 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: "DetailSegue", sender: indexPath)
     }
-    
-    
 }
 
 
